@@ -60,9 +60,9 @@ app.post('/', function (req, res) {
             console.log(data)
             let pnrStatus = '';
             for (var i = 0; i < data.Passangers.length; i++) {
-                pnrStatus += "*" + data.Passangers[i].Passenger + "* : " + data.Passangers[i].CurrentStatus + "\n"
+                pnrStatus +=  data.Passangers[i].Passenger + " : " + data.Passangers[i].CurrentStatus + "\n"
             }
-            let status = "*_Your PNR status is_* : \n" + pnrStatus;
+            let status = "Your PNR status is : \n" + pnrStatus;
             agent.add(status)
         })
     }
@@ -138,7 +138,7 @@ app.post('/', function (req, res) {
                     
                     agent.add(new Card({
                         title: data.Trains[i].TrainNo+' | '+data.Trains[i].TrainName + " ( "+data.Trains[i].TrainType+" )",
-                        text: "*Source : *"+data.Trains[i].Source+" | "+data.Trains[i].ArrivalTime+"\n *Destination : *"+data.Trains[i].Destination+ " | "+data.Trains[i].DepartureTime,
+                        text: "Source : "+data.Trains[i].Source+" | "+data.Trains[i].ArrivalTime+"\n Destination : "+data.Trains[i].Destination+ " | "+data.Trains[i].DepartureTime,
                         buttonText: 'Seat Availablity',
                         buttonUrl: 'How many Seats are available for '+data.Trains[i].TrainNo+' from '+data.Trains[i].Source+ ' to '+data.Trains[i].Destination
                     })
