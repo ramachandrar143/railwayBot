@@ -211,3 +211,6 @@ function changeFormat(date) {
     var year = (todayTime.getFullYear());
     return day + "-" + month + "-" + year
 }
+app.get("/sayHai", function (req, res) {
+    res.send("<H1>Hello World!</h1>")
+})
