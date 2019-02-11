@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const { WebhookClient } = require('dialogflow-fulfillment');
 const { Card, Suggestion, Payload } = require('dialogflow-fulfillment');
 
-app.listen(3000, () => {
+app.listen(process.env.PORT ||3000, () => {
     console.log("server running on 3000")
 });
 
