@@ -149,11 +149,12 @@ app.post('/', function (req, res) {
                 for (var i = 0; i < (data.Trains).length; i++) {
                     console.log(data.Trains[i])
                     agent.add(new Card({
-                        title: `Title: this is a card title`,
-                        text: `This is the body text of a card.  You can even use line\n  breaks and emoji! 💁`,
-                        buttonText: 'This is a button',
-                        buttonUrl: 'https://assistant.google.com/'
+                        title: data.Trains[i].TrainNo+' | '+data.Trains[i].TrainName + " ( "+data.Trains[i].TrainType+" )",
+                        text: "Source : "+data.Trains[i].Source+" | "+data.Trains[i].ArrivalTime+"\n Destination : "+data.Trains[i].Destination+ " | "+data.Trains[i].DepartureTime,
+                        buttonText: 'Seat Availablity',
+                        buttonUrl: 'How many Seats are available for '+data.Trains[i].TrainNo+' from '+data.Trains[i].Source+ ' to '+data.Trains[i].Destination
                     })
+                    
                     );
                 }
             }
