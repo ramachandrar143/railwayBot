@@ -4,7 +4,7 @@
   "description": "Indian Railway chatbot",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node app.js"
   },
   "author": "Roja Reddy",
   "license": "ISC",

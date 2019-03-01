@@ -12,7 +12,7 @@ module.exports = {
         if (mm < 10) {
             mm = '0' + mm;
         }
-        var today = yyyy + '' + mm + '' + dd;
+        var today = dd+"-"+mm+"-"+yyyy;
         return today;
     },
     getTime: function gttime() {
