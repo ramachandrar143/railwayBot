@@ -117,6 +117,7 @@ app.post('/', function (req, res) {
                 console.log(data)
                 
                 if ((data.Trains).length > 10) {
+                    console.log("gt 10")
                     for (i = 0; i < 10; i++){
                         let train = data.Trains[i];
                         agent.add(new Card({
@@ -127,12 +128,16 @@ app.post('/', function (req, res) {
                         }))
                     }
                 }
+
+            
                 else {
-                    for (i = 0; i < data.total; i++){
-                        let train = data.trains[i];
+                    console.log("lt 10")
+                    for (i = 0; i < (data.Trains).length; i++){
+                        let train = data.Trains[i];
+                        console.log(train.Source)
                         agent.add(new Card({
                             title: train.TrainName + " | " + train.TrainNo,
-                            text: "Travel time :"+train.TravelTime+", Depatures from"+source+" at "+train.ArrivalTime ,
+                            text: "Travel time :"+train.TravelTime+", Depatures from"+train.Source+" at "+train.ArrivalTime ,
                             buttonText: 'Seat Availablity',
                             buttonUrl: 'How many seats are available for ' + train.TrainNo
                         }))
