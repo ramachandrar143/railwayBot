@@ -108,23 +108,22 @@ app.post('/', function (req, res) {
             agent.add("Please Enter your Destination");
         }
         else {
-            console.log('https://api.railwayapi.com/v2/between/source/' + source + '/dest/' + destination + '/date/' + date.getDate() + '/apikey/' + RAILAPI);
+            console.log("http://indianrailapi.com/api/v2/TrainBetweenStation/apikey/"+APIKEY+"/From/"+source+"/To/"+destination);
             var options = {
-                url: 'https://api.railwayapi.com/v2/between/source/' + source + '/dest/' + destination + '/date/' + date.getDate() + '/apikey/' + RAILAPI,
+                url: "http://indianrailapi.com/api/v2/TrainBetweenStation/apikey/"+APIKEY+"/From/"+source+"/To/"+destination,
                 json:true
             }
             return request(options).then(data => {
                 console.log(data)
                 
-                agent.add("wait")
-                if (data.total > 10) {
+                if ((data.Trains).length > 10) {
                     for (i = 0; i < 10; i++){
-                        let train = data.trains[i];
+                        let train = data.Trains[i];
                         agent.add(new Card({
-                            title: train.name + " | " + train.number,
-                            text: "Travel time :"+train.travel_time+", Depatures from"+source+" at "+train.src_departure_time ,
+                            title: train.TrainName + " | " + train.TrainNo,
+                            text: "Travel time :"+train.TravelTime+", Depatures from"+source+" at "+train.ArrivalTime ,
                             buttonText: 'Seat Availablity',
-                            buttonUrl: 'How many seats are available for ' + train.number
+                            buttonUrl: 'How many seats are available for ' + train.TrainNo
                         }))
                     }
                 }
@@ -132,10 +131,10 @@ app.post('/', function (req, res) {
                     for (i = 0; i < data.total; i++){
                         let train = data.trains[i];
                         agent.add(new Card({
-                            title: train.name + " | " + train.number,
-                            text: "Travel time :"+train.travel_time+", Depatures from"+source+" at "+train.src_departure_time ,
+                            title: train.TrainName + " | " + train.TrainNo,
+                            text: "Travel time :"+train.TravelTime+", Depatures from"+source+" at "+train.ArrivalTime ,
                             buttonText: 'Seat Availablity',
-                            buttonUrl: 'How many seats are available for ' + train.number
+                            buttonUrl: 'How many seats are available for ' + train.TrainNo
                         }))
                     }
                 }
