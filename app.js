@@ -1,6 +1,8 @@
-    var express = require('express')
+var express = require('express')
 var bodyParser = require('body-parser');
-var request = require('request-promise')
+var request = require('request-promise');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://roja:rreddy41097@ds357955.mlab.com:57955/railwaybot', { useNewUrlParser: true})
 var cors = require('cors');
 var date = require('./Date.js');
 var app = express();
@@ -11,6 +13,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const { WebhookClient } = require('dialogflow-fulfillment');
 const { Card, Suggestion, Payload } = require('dialogflow-fulfillment');
+
+let noti = mongoose.model('notifications', {
+    "fbId": String,
+    "time": String,
+    "station": String,
+    "trainNumber":String
+})
 
 app.listen(process.env.PORT ||3000, () => {
     console.log("server running on 3000")
@@ -26,6 +35,7 @@ app.post('/', function (req, res) {
     intentMap.set('SEAT_AVAIL', seatAvailablity);
     intentMap.set('fareEnq', fareEnquiry);
     //intentMap.set('seat_layout', seatLayout);
+    intentMap.set('notification', notification);
     intentMap.set('TrainsBwStations', TrainsBwStations)
     agent.handleRequest(intentMap);
 
@@ -66,6 +76,41 @@ app.post('/', function (req, res) {
         })
     }
 */
+    function notification(agent) {
+        let trainNumber = agent.parameters.number;
+        let stationCode = agent.parameters.stations;
+        let fbid = req.body.originalDetectIntentRequest.payload.data.sender.id;
+        console.log('https://api.railwayapi.com/v2/route/train/' + trainNumber + '/apikey/' + RAILAPI)
+        var options = {
+            url: 'https://api.railwayapi.com/v2/route/train/' + trainNumber + '/apikey/' + RAILAPI,
+            json:true
+        }
+        return request(options).then((data) => {
+            let routes = (data.route);
+          
+            for (i = 0; i < (routes).length; i++){
+                if (routes[i].station.code == stationCode) {
+                    agent.add("Ok, sit back! we'll notify you.")
+                    noti.create({
+                        "fbId": fbid,
+                        "time": routes[i].scharr,
+                        "station": stationCode,
+                        "trainNumber":trainNumber
+                    }, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                agent.add("Cannot process right at the moment, please try again later")
+                            }
+                            else {
+                                console.log("done!")
+                                
+                            }
+                    })
+                }
+            }
+        })
+
+    }
     function liveStatus(agent) {
         console.log(agent.parameters);
         console.log(date.getDate())
@@ -251,7 +296,74 @@ function changeFormat(date) {
     console.log(day + "-" + month + "-" + year)
     return day + "-" + month + "-" + year
 }
+function changeFormatIndianRail(date) {
+    var todayTime = new Date(date);
 
+    var month = (todayTime.getMonth() + 1);
+
+    var day = (todayTime.getDate());
+
+    var year = (todayTime.getFullYear());
+    console.log(day + "-" + month + "-" + year)
+    return year + "" + month + "" + date;
+}
 app.get("/", function (req, res) {
     res.send("v2 is in production")
 })
+var notificationsTime = setInterval(function () {
+    var time = date.getTime()
+    console.log(time)
+    noti.find({ "time": time }, function (err, data) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log(data.length)
+            if (data.length == 0) {
+                console.log("no alarms")
+            }
+            else {
+               
+            var options = {
+                method: "POST",
+                url: "https://graph.facebook.com/v2.6/me/messages?access_token=EAAFwaZClUFZC8BAHusV5aJTo3cqrYrWCnV13akuvKvZCPtwYFZC5L1Nb9560Hzo23Jm4QFF62aMZB6rTQgNmMldUn740zeQZCHHVsxw23ZAQ7QNG7x6EgboCVUuzlS0QBY0vekMf0tFXF3v82sDY1Ie32hXKO8th0ZCOZA7OXWHYfsgZDZD",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: {
+                    "messaging_type": "UPDATE",
+                    "recipient": {
+                        "id": data[0].fbId
+                    },
+                    "message": {
+                        "attachment": {
+                            "type": "template",
+                            "payload": {
+                                "template_type": "generic",
+                                "elements": [
+                                    {
+                                        'title': 'Your Train ' + data[0].trainNumber + ' is just arrived at ' + data[0].station + '. Get ready..! Happy Journey',
+                                        'subtitle': 'Happy Journey..!',
+                                        'image_url': 'http://clipart-library.com/images/pc7dyEEqi.gif',
+                                        'buttons': [
+                                            {
+                                                'type': 'postback',
+                                                'title': 'Thank You!',
+                                                'payload': 'Thank you!'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                json: true
+                }
+                return request(options).then(data => {
+                    console.log(data);
+                })
+            }
+        }
+    })
+},60000)
