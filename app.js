@@ -6,8 +6,8 @@ mongoose.connect('mongodb://roja:rreddy41097@ds357955.mlab.com:57955/railwaybot'
 var cors = require('cors');
 var date = require('./Date.js');
 var app = express();
-const APIKEY = "31433211260b5f3c66b434f01d066fa7";
-const RAILAPI = "vbebq9eciz"
+const APIKEY = "240e35d5d28331a04a8a7fd500474fa3";
+const RAILAPI = "sco2ov7jtu"
 app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -326,7 +326,7 @@ var notificationsTime = setInterval(function () {
                
             var options = {
                 method: "POST",
-                url: "https://graph.facebook.com/v2.6/me/messages?access_token=EAAFwaZClUFZC8BAHusV5aJTo3cqrYrWCnV13akuvKvZCPtwYFZC5L1Nb9560Hzo23Jm4QFF62aMZB6rTQgNmMldUn740zeQZCHHVsxw23ZAQ7QNG7x6EgboCVUuzlS0QBY0vekMf0tFXF3v82sDY1Ie32hXKO8th0ZCOZA7OXWHYfsgZDZD",
+                url: "https://graph.facebook.com/v2.6/me/messages?access_token=EAAgCZBFI1JtgBAL3tiEB2PyWHZAh5C3o4SNAahfJvfZBILiw0rFWA8xsZAiJ2ONrC4lfFYTDduZB7UbSWUCRdQxF527yHWstVplHBmmPQxI5RZB2q4mssunfAErS3zH5Jif50ZCZBWghL3QInp4V9Bfarc7wgXYudlXLut9VAqY8FgZDZD",
                 headers: {
                     "Content-Type": "application/json"
                 },
